@@ -4,9 +4,9 @@
  * you may not use this file except in compliance with the Elastic License.
  */
 
+import { ElementFactory } from '../types';
 import header from './header.png';
 
-import { ElementFactory } from '../types';
 export const markdown: ElementFactory = () => ({
   name: 'markdown',
   displayName: 'Markdown',

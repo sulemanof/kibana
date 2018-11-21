@@ -5,6 +5,7 @@
  */
 
 import { ElementSpec } from '../../canvas_plugin_src/elements/types';
+import { ElementStrings } from './../../canvas_plugin_src/elements/strings';
 import defaultHeader from './default_header.png';
 
 export class Element {
@@ -25,13 +26,14 @@ export class Element {
   public height?: number;
 
   constructor(config: ElementSpec) {
-    const { name, image, displayName, expression, filter, width, height } = config;
+    const { name, image, displayName, expression, filter, help, width, height } = config;
+    const elementStrings = ElementStrings[name];
     this.name = name;
-    this.displayName = displayName || name;
+    this.displayName = (elementStrings && elementStrings.displayName) || displayName || name;
     this.image = image || defaultHeader;
-    this.help = config.help || '';
+    this.help = (elementStrings && elementStrings.help) || help || '';
 
-    if (!config.expression) {
+    if (!expression) {
       throw new Error('Element types must have a default expression');
     }
 

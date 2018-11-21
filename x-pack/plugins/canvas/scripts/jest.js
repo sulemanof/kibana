@@ -4,7 +4,4 @@
  * you may not use this file except in compliance with the Elastic License.
  */
 
-import 'babel-polyfill';
-import { elementFactories } from './index';
-
-elementFactories.forEach(canvas.register);
+require('./_helpers').runXPackScript('jest', ['plugins/canvas']);

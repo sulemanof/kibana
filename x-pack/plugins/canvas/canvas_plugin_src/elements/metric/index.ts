@@ -5,9 +5,9 @@
  */
 
 import { openSans } from '../../../common/lib/fonts';
+import { ElementFactory } from '../types';
 import header from './header.png';
 
-import { ElementFactory } from '../types';
 export const metric: ElementFactory = () => ({
   name: 'metric',
   displayName: 'Metric',

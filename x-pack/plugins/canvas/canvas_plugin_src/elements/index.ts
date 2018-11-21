@@ -4,6 +4,8 @@
  * you may not use this file except in compliance with the Elastic License.
  */
 
+import { ElementFactory } from './types';
+
 import { areaChart } from './area_chart';
 import { bubbleChart } from './bubble_chart';
 import { debug } from './debug';
@@ -31,7 +33,7 @@ import { verticalBarChart } from './vert_bar_chart';
 import { verticalProgressBar } from './vertical_progress_bar';
 import { verticalProgressPill } from './vertical_progress_pill';
 
-export const elementSpecs = [
+export const elementFactories: ElementFactory[] = [
   areaChart,
   bubbleChart,
   debug,

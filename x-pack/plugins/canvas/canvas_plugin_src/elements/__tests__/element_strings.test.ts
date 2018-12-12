@@ -4,11 +4,11 @@
  * you may not use this file except in compliance with the Elastic License.
  */
 
-import { elementSpecs } from '../';
+import { elementFactories } from '../';
 import { ElementStrings } from '../strings';
 
 describe('ElementStrings', () => {
-  const elementNames = elementSpecs.map(spec => spec().name);
+  const elementNames = elementFactories.map(spec => spec().name);
   const stringKeys = Object.keys(ElementStrings);
 
   test('All element names should exist in the strings definition', () => {

@@ -6,3 +6,5 @@
 
 export * from './apply_strings';
 export * from './element_strings';
+export * from './function_errors';
+export * from './function_help';

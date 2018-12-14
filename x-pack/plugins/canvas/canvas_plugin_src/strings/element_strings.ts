@@ -6,12 +6,16 @@
 
 import { i18n } from '@kbn/i18n';
 
-export const ElementStrings: {
-  [name: string]: {
-    displayName: string;
-    help: string;
-  };
-} = {
+interface ElementStrings {
+  displayName: string;
+  help: string;
+}
+
+interface ElementStringDict {
+  [elementName: string]: ElementStrings;
+}
+
+export const elementStrings: ElementStringDict = {
   areaChart: {
     displayName: i18n.translate('xpack.canvas.elements.areaChartDisplayName', {
       defaultMessage: 'Area chart',

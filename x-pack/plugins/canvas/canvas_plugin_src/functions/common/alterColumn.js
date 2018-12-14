@@ -5,6 +5,7 @@
  */
 
 import { omit } from 'lodash';
+import { functionErrors } from '../../strings';
 
 export const alterColumn = () => ({
   name: 'alterColumn',
@@ -35,7 +36,7 @@ export const alterColumn = () => ({
     if (!args.column || (!args.type && !args.name)) return context;
 
     const column = context.columns.find(col => col.name === args.column);
-    if (!column) throw new Error(`Column not found: '${args.column}'`);
+    if (!column) throw functionErrors.alterColumn.columnNotFound(column);
 
     const name = args.name || column.name;
     const type = args.type || column.type;
@@ -65,7 +66,7 @@ export const alterColumn = () => ({
           case 'null':
             return () => null;
           default:
-            throw new Error(`Cannot convert to ${type}`);
+            throw functionErrors.alterColumn.columnNotFound(column);
         }
       })();
     }

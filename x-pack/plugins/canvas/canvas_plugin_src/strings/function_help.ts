@@ -5,12 +5,16 @@
  */
 import { i18n } from '@kbn/i18n';
 
-export interface FunctionHelp {
+interface FunctionHelp {
   help: string;
   args?: { [arg: string]: string };
 }
 
-export const functionHelp: { [key: string]: FunctionHelp } = {
+interface FunctionHelpDict {
+  [fnName: string]: FunctionHelp;
+}
+
+export const functionHelp: FunctionHelpDict = {
   all: {
     help: i18n.translate('xpack.canvas.functions.all.args.conditionHelpText', {
       defaultMessage: 'One or more conditions to check',
@@ -328,7 +332,7 @@ export const functionHelp: { [key: string]: FunctionHelp } = {
     },
     help: i18n.translate('xpack.canvas.functions.markdownHelpText', {
       defaultMessage:
-        'An element for rendering markdown text. CLINT HALL Great for single numbers, metrics or paragraphs of text.',
+        'An element for rendering markdown text. Great for single numbers, metrics or paragraphs of text.',
     }),
   },
   plot: {

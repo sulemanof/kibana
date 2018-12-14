@@ -5,7 +5,13 @@
  */
 import { i18n } from '@kbn/i18n';
 
-export const functionErrors = {
+type FunctionErrorFactory = (...args: string[]) => Error;
+
+interface FunctionErrorDict {
+  [fnName: string]: { [errorKey: string]: FunctionErrorFactory };
+}
+
+export const functionErrors: FunctionErrorDict = {
   alterColumn: {
     columnNotFound: (column: string) =>
       new Error(
@@ -20,17 +26,21 @@ export const functionErrors = {
       new Error(
         i18n.translate('xpack.canvas.functions.alterColumn.convertToTypeErrorMessage', {
           defaultMessage: 'Cannot convert to {type}',
-          values: { type },
+          values: {
+            type,
+          },
         })
       ),
   },
   axisConfig: {
-    positionInvalid: (position: string) =>
+    maxInvalid: (max: string) =>
       new Error(
-        i18n.translate('xpack.canvas.functions.axisConfig.invalidPositionErrorMessage', {
-          defaultMessage: 'Invalid position {position}',
+        i18n.translate('xpack.canvas.functions.axisConfig.maxArgTypeErrorMessage', {
+          defaultMessage: `Invalid date string '{max}' found. '{maxConfig}' must be a number, date in ms, or {isoFormat} date string`,
           values: {
-            position,
+            max,
+            maxConfig: 'max',
+            isoFormat: 'ISO8601',
           },
         })
       ),
@@ -45,14 +55,12 @@ export const functionErrors = {
           },
         })
       ),
-    maxInvalid: (max: string) =>
+    positionInvalid: (position: string) =>
       new Error(
-        i18n.translate('xpack.canvas.functions.axisConfig.maxArgTypeErrorMessage', {
-          defaultMessage: `Invalid date string '{max}' found. '{maxConfig}' must be a number, date in ms, or {isoFormat} date string`,
+        i18n.translate('xpack.canvas.functions.axisConfig.invalidPositionErrorMessage', {
+          defaultMessage: 'Invalid position {position}',
           values: {
-            max,
-            maxConfig: 'max',
-            isoFormat: 'ISO8601',
+            position,
           },
         })
       ),
@@ -83,7 +91,9 @@ export const functionErrors = {
       new Error(
         i18n.translate('xpack.canvas.functions.date.invalidDateInputErrorMessage', {
           defaultMessage: 'Invalid date input: {date}',
-          values: { date },
+          values: {
+            date,
+          },
         })
       ),
   },

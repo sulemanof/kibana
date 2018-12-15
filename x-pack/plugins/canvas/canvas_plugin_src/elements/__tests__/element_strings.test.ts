@@ -5,11 +5,11 @@
  */
 
 import { elementFactories } from '../';
-import { ElementStrings } from '../strings';
+import { elementStrings } from '../../strings';
 
 describe('ElementStrings', () => {
   const elementNames = elementFactories.map(spec => spec().name);
-  const stringKeys = Object.keys(ElementStrings);
+  const stringKeys = Object.keys(elementStrings);
 
   test('All element names should exist in the strings definition', () => {
     elementNames.forEach(name => expect(stringKeys).toContain(name));
@@ -19,7 +19,7 @@ describe('ElementStrings', () => {
     stringKeys.forEach(key => expect(elementNames).toContain(key));
   });
 
-  const strings = Object.values(ElementStrings);
+  const strings = Object.values(elementStrings);
 
   test('All elements should have a displayName string defined', () => {
     strings.forEach(value => {

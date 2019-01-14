@@ -16,24 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import buildRequestBody from './build_request_body';
+import AbstractSearchRequest from './abstract_request';
 
-export default (req, panel, series, isBatchRequest = true) => {
-  const bodies = [];
+const SEARCH_METHOD = 'msearch';
 
-  if (isBatchRequest) {
-    const indexPattern = series.override_index_pattern && series.series_index_pattern || panel.index_pattern;
-
-    bodies.push({
-      index: indexPattern,
-      ignoreUnavailable: true,
+export default class MultiSearchRequest extends AbstractSearchRequest {
+  async search(options) {
+    const includeFrozen = await this.req.getUiSettingsService().get('search:includeFrozen');
+    const { responses } = await this.callWithRequest(this.req, SEARCH_METHOD, {
+      ...options,
+      rest_total_hits_as_int: true,
+      ignore_throttled: !includeFrozen,
     });
+
+    return responses;
   }
-
-  bodies.push({
-    ...buildRequestBody(req, panel, series),
-    timeout: '90s'
-  });
-
-  return bodies;
-};
+}

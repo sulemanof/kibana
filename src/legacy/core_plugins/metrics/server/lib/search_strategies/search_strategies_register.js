@@ -16,24 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import buildRequestBody from './build_request_body';
+import AbstractSearchStrategy from './strategies/abstract_search_strategy';
+import DefaultSearchStrategy from './strategies/default_search_strategy';
 
-export default (req, panel, series, isBatchRequest = true) => {
-  const bodies = [];
+const strategies = [];
 
-  if (isBatchRequest) {
-    const indexPattern = series.override_index_pattern && series.series_index_pattern || panel.index_pattern;
-
-    bodies.push({
-      index: indexPattern,
-      ignoreUnavailable: true,
-    });
+export default class SearchStrategiesRegister {
+  add(searchStrategy) {
+    if (searchStrategy instanceof AbstractSearchStrategy) {
+      strategies.push(searchStrategy);
+    }
+    return this;
   }
 
-  bodies.push({
-    ...buildRequestBody(req, panel, series),
-    timeout: '90s'
-  });
+  static init(server) {
+    const searchStrategiesRegister = new SearchStrategiesRegister();
 
-  return bodies;
-};
+    server.expose('addSearchStrategy', (searchStrategy) => searchStrategiesRegister.add(searchStrategy));
+
+    return searchStrategiesRegister.add(new DefaultSearchStrategy(server));
+  }
+
+  static getStrategyForIndex(indexPattern) {
+    return strategies.find(searchStrategy => {
+      return searchStrategy.isViable(indexPattern);
+    });
+  }
+}

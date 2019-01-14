@@ -16,31 +16,35 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 import getRequestParams from './series/get_request_params';
 import handleResponseBody from './series/handle_response_body';
 import handleErrorResponse from './handle_error_response';
 import getAnnotations from './get_annotations';
+import SearchStrategiesRegister from '../search_strategies/search_strategies_register';
+
 export async function getSeriesData(req, panel) {
-  const { callWithRequest } = req.server.plugins.elasticsearch.getCluster('data');
-  const includeFrozen = await req.getUiSettingsService().get('search:includeFrozen');
-  const bodies = panel.series.map(series => getRequestParams(req, panel, series));
-  const params = {
-    rest_total_hits_as_int: true,
-    ignore_throttled: !includeFrozen,
-    body: bodies.reduce((acc, items) => acc.concat(items), [])
-  };
-  return callWithRequest(req, 'msearch', params)
-    .then(resp => {
-      const series = resp.responses.map(handleResponseBody(panel));
+  const indexPattern = panel.index_pattern;
+  const searchStrategy = SearchStrategiesRegister.getStrategyForIndex(indexPattern);
+  const searchRequest = searchStrategy.getSearchRequest(req);
+
+  const body = panel.series
+    .map(series => getRequestParams(req, panel, series, searchStrategy.batchRequestsSupport))
+    .reduce((acc, items) => acc.concat(items), []);
+
+  return searchRequest.search({ body }, indexPattern)
+    .then(data => {
+      const series = data.map(handleResponseBody(panel));
       return {
         [panel.id]: {
           id: panel.id,
-          series: series.reduce((acc, series) => acc.concat(series), [])
-        }
+          series: series.reduce((acc, series) => acc.concat(series), []),
+        },
       };
     })
     .then(resp => {
+      // TODO: don't forget to remove
+      // Should be refactored
+      return resp;
       if (!panel.annotations || panel.annotations.length === 0) return resp;
       return getAnnotations(req, panel).then(annotations => {
         resp[panel.id].annotations = annotations;

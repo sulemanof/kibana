@@ -21,16 +21,16 @@ import buildRequestBody from './table/build_request_body';
 import handleErrorResponse from './handle_error_response';
 import { get } from 'lodash';
 import processBucket from './table/process_bucket';
+import SearchStrategiesRegister from '../search_strategies/search_strategies_register';
+
 export async function getTableData(req, panel) {
-  const { callWithRequest } = req.server.plugins.elasticsearch.getCluster('data');
-  const includeFrozen = await req.getUiSettingsService().get('search:includeFrozen');
-  const params = {
-    index: panel.index_pattern,
-    ignore_throttled: !includeFrozen,
-    body: buildRequestBody(req, panel)
-  };
+  const indexPattern = panel.index_pattern;
+  const searchStrategy = SearchStrategiesRegister.getViableStrategy(req, indexPattern);
+  const searchRequest = searchStrategy.getSearchRequest(req, indexPattern);
+  const body = buildRequestBody(req, panel);
+
   try {
-    const resp = await callWithRequest(req, 'search', params);
+    const resp = await searchRequest.search({ body });
     const buckets = get(resp, 'aggregations.pivot.buckets', []);
     return { type: 'table', series: buckets.map(processBucket(panel)) };
   } catch (err) {

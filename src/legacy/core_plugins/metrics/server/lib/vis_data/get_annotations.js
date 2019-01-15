@@ -19,6 +19,7 @@
 
 import buildAnnotationRequest from './build_annotation_request';
 import handleAnnotationResponse from './handle_annotation_response';
+import SearchStrategiesRegister from '../search_strategies/search_strategies_register';
 
 function validAnnotation(annotation) {
   return annotation.index_pattern &&
@@ -29,7 +30,9 @@ function validAnnotation(annotation) {
 }
 
 export default async (req, panel) => {
-  const { callWithRequest } = req.server.plugins.elasticsearch.getCluster('data');
+  const indexPattern = panel.index_pattern;
+  const searchStrategy = SearchStrategiesRegister.getViableStrategy(req, indexPattern);
+  const searchRequest = searchStrategy.getSearchRequest(req, indexPattern);
   const bodies = panel.annotations
     .filter(validAnnotation)
     .map(annotation => {
@@ -49,13 +52,11 @@ export default async (req, panel) => {
     });
 
   if (!bodies.length) return { responses: [] };
+
+  const body = bodies.reduce((acc, item) => acc.concat(item), []);
+
   try {
-    const includeFrozen = await req.getUiSettingsService().get('search:includeFrozen');
-    const resp = await callWithRequest(req, 'msearch', {
-      ignore_throttled: !includeFrozen,
-      rest_total_hits_as_int: true,
-      body: bodies.reduce((acc, item) => acc.concat(item), [])
-    });
+    const resp = await searchRequest.search({ body });
     const results = {};
     panel.annotations
       .filter(validAnnotation)

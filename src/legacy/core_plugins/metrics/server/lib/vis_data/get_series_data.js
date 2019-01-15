@@ -24,14 +24,14 @@ import SearchStrategiesRegister from '../search_strategies/search_strategies_reg
 
 export async function getSeriesData(req, panel) {
   const indexPattern = panel.index_pattern;
-  const searchStrategy = SearchStrategiesRegister.getStrategyForIndex(indexPattern);
-  const searchRequest = searchStrategy.getSearchRequest(req);
+  const searchStrategy = SearchStrategiesRegister.getViableStrategy(req, indexPattern);
+  const searchRequest = searchStrategy.getSearchRequest(req, indexPattern);
 
   const body = panel.series
     .map(series => getRequestParams(req, panel, series, searchStrategy.batchRequestsSupport))
     .reduce((acc, items) => acc.concat(items), []);
 
-  return searchRequest.search({ body }, indexPattern)
+  return searchRequest.search({ body })
     .then(data => {
       const series = data.map(handleResponseBody(panel));
       return {

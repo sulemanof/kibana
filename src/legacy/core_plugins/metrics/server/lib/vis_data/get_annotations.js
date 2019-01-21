@@ -36,7 +36,7 @@ export default async (req, panel) => {
   const annotations = panel.annotations.filter(validAnnotation);
 
   const body = annotations
-    .map(annotation => getRequestParams(req, panel, annotation, capabilities.batchRequestsSupport))
+    .map(annotation => getRequestParams(req, panel, annotation, capabilities))
     .reduce((acc, item) => acc.concat(item), []);
 
   if (!body.length) return { responses: [] };

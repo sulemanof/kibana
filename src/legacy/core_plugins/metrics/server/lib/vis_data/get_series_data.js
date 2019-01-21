@@ -28,7 +28,7 @@ export async function getSeriesData(req, panel) {
   const searchRequest = searchStrategy.getSearchRequest(req, indexPattern);
 
   const body = panel.series
-    .map(series => getRequestParams(req, panel, series, capabilities.batchRequestsSupport))
+    .map(series => getRequestParams(req, panel, series, capabilities))
     .reduce((acc, items) => acc.concat(items), []);
 
   return searchRequest.search({ body })

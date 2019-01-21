@@ -19,12 +19,12 @@
 
 import getBucketSize from '../../helpers/get_bucket_size';
 import getTimerange from '../../helpers/get_timerange';
-export default function query(req, panel, annotation) {
+export default function query(req, panel, annotation, capabilities) {
   return next => doc => {
     const timeField = annotation.time_field;
     const {
       bucketSize
-    } = getBucketSize(req, 'auto');
+    } = getBucketSize(req, 'auto', capabilities);
     const { from, to } = getTimerange(req);
 
     doc.size = 0;

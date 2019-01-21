@@ -18,10 +18,10 @@
  */
 import buildRequestBody from './build_request_body';
 
-export default (req, panel, series, isBatchRequest = true) => {
+export default (req, panel, series, capabilities) => {
   const bodies = [];
 
-  if (isBatchRequest) {
+  if (capabilities.batchRequestsSupport) {
     const indexPattern = series.override_index_pattern && series.series_index_pattern || panel.index_pattern;
 
     bodies.push({
@@ -31,8 +31,8 @@ export default (req, panel, series, isBatchRequest = true) => {
   }
 
   bodies.push({
-    ...buildRequestBody(req, panel, series),
-    timeout: '90s'
+    ...buildRequestBody(req, panel, series, capabilities),
+    timeout: '90s',
   });
 
   return bodies;

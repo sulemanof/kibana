@@ -16,25 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+const { set, get, isEmpty } = require('lodash');
 
-import pivot from './pivot';
-import query from './query';
-import splitByEverything from './split_by_everything';
-import splitByTerms from './split_by_terms';
-import dateHistogram from './date_histogram';
-import metricBuckets from './metric_buckets';
-import siblingBuckets from './sibling_buckets';
-import filterRatios from './filter_ratios';
-import normalizeQuery from './normalize_query';
+const isEmptyFilter = (filter = {}) => Boolean(filter.match_all) && isEmpty(filter.match_all);
 
-export default [
-  query,
-  pivot,
-  splitByTerms,
-  splitByEverything,
-  dateHistogram,
-  metricBuckets,
-  siblingBuckets,
-  filterRatios,
-  normalizeQuery
-];
+export default function normalizeQuery(req, panel) {
+  return () => doc => {
+    const filter = get(doc, `aggs.pivot.aggs.${panel.series[0].id}.filter`);
+
+    if (isEmptyFilter(filter)) {
+      const meta = get(doc, `aggs.pivot.aggs.${panel.series[0].id}.meta`);
+      set(doc, `aggs.pivot.aggs`, doc.aggs.pivot.aggs[panel.series[0].id].aggs);
+      set(doc, `aggs.pivot.aggs.timeseries.meta`, meta);
+    }
+
+    return doc;
+  };
+}

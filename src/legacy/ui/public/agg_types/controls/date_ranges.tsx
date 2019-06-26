@@ -50,7 +50,7 @@ const validateDateMath = (value: string = '') => {
   return moment && moment.isValid();
 };
 
-interface DateRangeValues {
+export interface DateRangeValues {
   from?: string;
   to?: string;
 }

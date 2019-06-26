@@ -39,7 +39,7 @@ const TO_PLACEHOLDER = '+\u221E';
 const generateId = htmlIdGenerator();
 const isEmpty = (value: any) => value === undefined || value === null;
 
-interface RangeValues {
+export interface RangeValues {
   from?: number;
   to?: number;
 }

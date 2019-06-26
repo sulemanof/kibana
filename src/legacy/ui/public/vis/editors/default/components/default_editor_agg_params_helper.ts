@@ -23,7 +23,7 @@ import { AggConfig, Vis, VisState } from 'ui/vis';
 import { aggTypeFilters } from 'ui/agg_types/filter';
 import { IndexPattern } from 'ui/index_patterns';
 // @ts-ignore
-import { aggTypes, AggParam, FieldParamType, AggType } from 'ui/agg_types';
+import { aggTypes, AggParam, FieldParamType, AggType, AggParamType } from 'ui/agg_types';
 import { aggTypeFieldFilters } from 'ui/agg_types/param_types/filter';
 import { groupAggregationsBy } from '../default_editor_utils';
 import { EditorConfig } from '../../config/types';
@@ -40,8 +40,8 @@ interface ParamInstanceBase {
 export interface ParamInstance extends ParamInstanceBase {
   aggParam: AggParam;
   indexedFields: FieldParamType[];
-  paramEditor: React.ComponentType<AggParamEditorProps<unknown>>;
-  value: any;
+  paramEditor: React.ComponentType<AggParamEditorProps<AggParamType>>;
+  value: AggParamType;
   visName: string;
 }
 

@@ -23,13 +23,14 @@ import { FieldParamType } from '../../../../agg_types/param_types';
 import { EditorConfig } from '../../config/types';
 import { VisState } from '../../../vis';
 import { SubAggParamsProp } from './default_editor_agg_params';
+import { AggParamType } from '../agg_params';
 
 // NOTE: we cannot export the interface with export { InterfaceName }
 // as there is currently a bug on babel typescript transform plugin for it
 // https://github.com/babel/babel/issues/7641
 //
 
-export interface AggParamCommonProps<T> {
+export interface AggParamCommonProps<T extends AggParamType> {
   agg: AggConfig;
   aggParam: AggParam;
   editorConfig: EditorConfig;

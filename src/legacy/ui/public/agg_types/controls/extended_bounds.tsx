@@ -24,7 +24,7 @@ import { i18n } from '@kbn/i18n';
 import { AggParamEditorProps } from 'ui/vis/editors/default';
 import { isUndefined } from 'lodash';
 
-interface Bounds {
+export interface Bounds {
   min: number | '';
   max: number | '';
 }

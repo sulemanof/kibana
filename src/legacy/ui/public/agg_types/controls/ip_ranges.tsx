@@ -24,7 +24,7 @@ import { AggParamEditorProps } from 'ui/vis/editors/default';
 import { FromToList, FromToObject } from './components/from_to_list';
 import { MaskList, MaskObject } from './components/mask_list';
 import { IpRangeTypes } from './ip_range_type';
-interface IpRange {
+export interface IpRange {
   fromTo: FromToObject[];
   mask: MaskObject[];
 }

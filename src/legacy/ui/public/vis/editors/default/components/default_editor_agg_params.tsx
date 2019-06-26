@@ -44,16 +44,17 @@ import {
 
 import { editorConfigProviders } from '../../config/editor_config_providers';
 import { FixedParam, TimeIntervalParam, EditorParamConfig } from '../../config/types';
+import { AggParamType } from '../agg_params';
 
 const FIXED_VALUE_PROP = 'fixedValue';
 const DEFAULT_PROP = 'default';
 type EditorParamConfigType = EditorParamConfig & {
-  [key: string]: any;
+  [key: string]: AggParamType;
 };
 export interface SubAggParamsProp {
   formIsTouched: boolean;
   vis: Vis;
-  onAggParamsChange: (agg: AggParams, paramName: string, value: any) => void;
+  onAggParamsChange: (agg: AggParams, paramName: string, value: AggParamType) => void;
   onAggTypeChange: (agg: AggConfig, aggType: AggType) => void;
   onAggErrorChanged: (agg: AggConfig, error?: string) => void;
 }

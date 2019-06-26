@@ -26,7 +26,7 @@ import { AggConfig } from 'ui/vis';
 import { AggParam } from '../agg_param';
 import { SelectValueProp, SelectParamEditorProps } from '../param_types/select';
 
-interface AggregateValueProp extends SelectValueProp {
+export interface AggregateValueProp extends SelectValueProp {
   isCompatibleType(filedType: string): boolean;
   isCompatibleVis(visName: string): boolean;
 }

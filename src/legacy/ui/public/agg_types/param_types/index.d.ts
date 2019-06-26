@@ -18,3 +18,4 @@
  */
 
 export { FieldParamType } from './field';
+export { SelectValueProp } from './select';

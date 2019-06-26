@@ -29,7 +29,7 @@ import { FilterRow } from './filter';
 const generateId = htmlIdGenerator();
 const config = chrome.getUiSettingsClient();
 
-interface FilterValue {
+export interface FilterValue {
   input: Query;
   label: string;
   id: string;

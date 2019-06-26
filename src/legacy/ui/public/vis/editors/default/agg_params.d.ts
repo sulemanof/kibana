@@ -17,6 +17,33 @@
  * under the License.
  */
 
+import { DateRangeValues } from '../../../agg_types/controls/date_ranges';
+import { Bounds } from '../../../agg_types/controls/extended_bounds';
+import { FieldParamType, SelectValueProp } from '../../../agg_types/param_types';
+import { FilterValue } from '../../../agg_types/controls/filters';
+import { IpRangeTypes } from '../../../agg_types/controls/ip_range_type';
+import { IpRange } from '../../../agg_types/controls/ip_ranges';
+import { RangeValues } from '../../../agg_types/controls/ranges';
+import { AggregateValueProp } from '../../../agg_types/controls/top_aggregate';
+import { AggConfig } from '../../agg_config';
+
+export type AggParamType =
+  | string
+  | number
+  | boolean
+  | undefined
+  | DateRangeValues[]
+  | Bounds
+  | FieldParamType
+  | SelectValueProp
+  | FilterValue[]
+  | IpRangeTypes
+  | IpRange
+  | RangeValues
+  | AggregateValueProp
+  | AggConfig
+  | '';
+
 export interface AggParams {
-  [key: string]: any;
+  [key: string]: AggParamType;
 }

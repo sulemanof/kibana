@@ -26,9 +26,13 @@ import {
   EuiFlexGroup,
   EuiFormErrorText,
   EuiIcon,
+  EuiIconTip,
   EuiSpacer,
   EuiButtonEmpty,
   EuiFormRow,
+  EuiDragDropContext,
+  EuiDraggable,
+  EuiDroppable,
 } from '@elastic/eui';
 import { FormattedMessage } from '@kbn/i18n/react';
 import { i18n } from '@kbn/i18n';
@@ -73,6 +77,7 @@ function RangesParamEditor({
   setValidity,
   validateRange,
 }: RangesParamEditorProps) {
+  const [uniqId] = useState(() => generateId());
   const [ranges, setRanges] = useState(() => value.map(range => ({ ...range, id: generateId() })));
 
   // set up an initial range when there is no default range
@@ -135,86 +140,116 @@ function RangesParamEditor({
   return (
     <EuiFormRow compressed fullWidth>
       <>
-        {ranges.map(({ from, to, id }, index) => {
-          const deleteBtnTitle = i18n.translate(
-            'common.ui.aggTypes.ranges.removeRangeButtonAriaLabel',
-            {
-              defaultMessage: 'Remove the range of {from} to {to}',
-              values: {
-                from: isEmpty(from) ? FROM_PLACEHOLDER : from,
-                to: isEmpty(to) ? TO_PLACEHOLDER : to,
-              },
-            }
-          );
+        <EuiDroppable
+          droppableId={`${dataTestSubj}-droppable__${uniqId}`}
+          type={`${uniqId}`}
+          className="test_dnd_ranges_panel"
+        >
+          <>
+            {ranges.map(({ from, to, id }, index) => {
+              const deleteBtnTitle = i18n.translate(
+                'common.ui.aggTypes.ranges.removeRangeButtonAriaLabel',
+                {
+                  defaultMessage: 'Remove the range of {from} to {to}',
+                  values: {
+                    from: isEmpty(from) ? FROM_PLACEHOLDER : from,
+                    to: isEmpty(to) ? TO_PLACEHOLDER : to,
+                  },
+                }
+              );
 
-          let isFromValid = true;
-          let isToValid = true;
+              let isFromValid = true;
+              let isToValid = true;
 
-          if (validateRange) {
-            [isFromValid, isToValid] = validateRange({ from, to }, index);
-          }
+              if (validateRange) {
+                [isFromValid, isToValid] = validateRange({ from, to }, index);
+              }
 
-          const fromPrepend = i18n.translate(
-            'common.ui.aggTypes.ranges.greaterThanOrEqualPrepend',
-            {
-              defaultMessage: '\u2265',
-            }
-          );
-          const toPrepend = i18n.translate('common.ui.aggTypes.ranges.lessThanPrepend', {
-            defaultMessage: '\u003c',
-          });
+              const fromPrepend = i18n.translate(
+                'common.ui.aggTypes.ranges.greaterThanOrEqualPrepend',
+                {
+                  defaultMessage: '\u2265',
+                }
+              );
+              const toPrepend = i18n.translate('common.ui.aggTypes.ranges.lessThanPrepend', {
+                defaultMessage: '\u003c',
+              });
 
-          return (
-            <Fragment key={id}>
-              <EuiFlexGroup gutterSize="s" alignItems="center" responsive={false}>
-                <EuiFlexItem>
-                  <EuiFieldNumber
-                    aria-label={i18n.translate('common.ui.aggTypes.ranges.fromLabel', {
-                      defaultMessage: 'From',
-                    })}
-                    data-test-subj={`${dataTestSubj}${index}__from`}
-                    value={isEmpty(from) ? '' : from}
-                    placeholder={hidePlaceholders ? undefined : FROM_PLACEHOLDER}
-                    onChange={ev => onChangeRange(id, 'from', ev.target.value)}
-                    fullWidth={true}
-                    compressed={true}
-                    isInvalid={!isFromValid}
-                    prepend={fromPrepend}
-                  />
-                </EuiFlexItem>
-                <EuiFlexItem grow={false}>
-                  <EuiIcon type="sortRight" color="subdued" />
-                </EuiFlexItem>
-                <EuiFlexItem>
-                  <EuiFieldNumber
-                    aria-label={i18n.translate('common.ui.aggTypes.ranges.toLabel', {
-                      defaultMessage: 'To',
-                    })}
-                    data-test-subj={`${dataTestSubj}${index}__to`}
-                    value={isEmpty(to) ? '' : to}
-                    placeholder={hidePlaceholders ? undefined : TO_PLACEHOLDER}
-                    onChange={ev => onChangeRange(id, 'to', ev.target.value)}
-                    fullWidth={true}
-                    compressed={true}
-                    isInvalid={!isToValid}
-                    prepend={toPrepend}
-                  />
-                </EuiFlexItem>
-                <EuiFlexItem grow={false}>
-                  <EuiButtonIcon
-                    title={deleteBtnTitle}
-                    aria-label={deleteBtnTitle}
-                    disabled={value.length === 1}
-                    color="danger"
-                    iconType="trash"
-                    onClick={() => onRemoveRange(id)}
-                  />
-                </EuiFlexItem>
-              </EuiFlexGroup>
-              <EuiSpacer size="xs" />
-            </Fragment>
-          );
-        })}
+              return (
+                <EuiDraggable key={id} index={index} draggableId={id} customDragHandle={true}>
+                  {provided => (
+                    <>
+                      <EuiFlexGroup gutterSize="s" alignItems="center" responsive={false}>
+                        <EuiFlexItem>
+                          <EuiFieldNumber
+                            aria-label={i18n.translate('common.ui.aggTypes.ranges.fromLabel', {
+                              defaultMessage: 'From',
+                            })}
+                            data-test-subj={`${dataTestSubj}${index}__from`}
+                            value={isEmpty(from) ? '' : from}
+                            placeholder={hidePlaceholders ? undefined : FROM_PLACEHOLDER}
+                            onChange={ev => onChangeRange(id, 'from', ev.target.value)}
+                            fullWidth={true}
+                            compressed={true}
+                            isInvalid={!isFromValid}
+                            prepend={fromPrepend}
+                          />
+                        </EuiFlexItem>
+                        <EuiFlexItem grow={false}>
+                          <EuiIcon type="sortRight" color="subdued" />
+                        </EuiFlexItem>
+                        <EuiFlexItem>
+                          <EuiFieldNumber
+                            aria-label={i18n.translate('common.ui.aggTypes.ranges.toLabel', {
+                              defaultMessage: 'To',
+                            })}
+                            data-test-subj={`${dataTestSubj}${index}__to`}
+                            value={isEmpty(to) ? '' : to}
+                            placeholder={hidePlaceholders ? undefined : TO_PLACEHOLDER}
+                            onChange={ev => onChangeRange(id, 'to', ev.target.value)}
+                            fullWidth={true}
+                            compressed={true}
+                            isInvalid={!isToValid}
+                            prepend={toPrepend}
+                          />
+                        </EuiFlexItem>
+                        <EuiFlexItem grow={false} {...provided.dragHandleProps}>
+                          <EuiIconTip
+                            type="grab"
+                            content={i18n.translate(
+                              'common.ui.aggTypes.ranges.modifyPriorityButtonTooltip',
+                              {
+                                defaultMessage: 'Modify order by dragging',
+                              }
+                            )}
+                            aria-label={i18n.translate(
+                              'common.ui.aggTypes.ranges.modifyPriorityButtonTooltip',
+                              {
+                                defaultMessage: 'Modify order by dragging',
+                              }
+                            )}
+                            position="bottom"
+                          />
+                        </EuiFlexItem>
+                        <EuiFlexItem grow={false}>
+                          <EuiButtonIcon
+                            title={deleteBtnTitle}
+                            aria-label={deleteBtnTitle}
+                            disabled={value.length === 1}
+                            color="danger"
+                            iconType="trash"
+                            onClick={() => onRemoveRange(id)}
+                          />
+                        </EuiFlexItem>
+                      </EuiFlexGroup>
+                      <EuiSpacer size="xs" />
+                    </>
+                  )}
+                </EuiDraggable>
+              );
+            })}
+          </>
+        </EuiDroppable>
 
         {hasInvalidRange && error && <EuiFormErrorText>{error}</EuiFormErrorText>}
 

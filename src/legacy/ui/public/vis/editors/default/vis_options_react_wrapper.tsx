@@ -17,7 +17,8 @@
  * under the License.
  */
 
-import React from 'react';
+import React, { useCallback } from 'react';
+import { EuiDragDropContext } from '@elastic/eui';
 import { VisOptionsProps } from './vis_options_props';
 
 interface VisOptionsReactWrapperProps extends VisOptionsProps {
@@ -25,7 +26,12 @@ interface VisOptionsReactWrapperProps extends VisOptionsProps {
 }
 
 function VisOptionsReactWrapper({ component: Component, ...rest }: VisOptionsReactWrapperProps) {
-  return <Component {...rest} />;
+  const onDragEnd = useCallback(() => {}, []);
+  return (
+    <EuiDragDropContext onDragEnd={onDragEnd}>
+      <Component {...rest} />
+    </EuiDragDropContext>
+  );
 }
 
 export { VisOptionsReactWrapper };

@@ -144,7 +144,7 @@ function DefaultEditorAggGroup({
           <h3>{groupNameLabel}</h3>
         </EuiTitle>
         <EuiSpacer size="s" />
-        <EuiDroppable droppableId={`agg_group_dnd_${groupName}`}>
+        <EuiDroppable droppableId={`agg_group_dnd_${groupName}`} type={`${groupName}`}>
           <>
             {group.map((agg: AggConfig, index: number) => (
               <EuiDraggable

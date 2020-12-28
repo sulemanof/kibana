@@ -71,12 +71,20 @@ function DefaultEditor({
       return;
     }
 
-    embeddableHandler.render(visRef.current);
     setTimeout(() => {
-      eventEmitter.emit('embeddableRendered');
-    });
+      embeddableHandler.render(visRef.current).then(() => {
+        eventEmitter.emit('embeddableRendered');
+        embeddableHandler.updateInput({
+          timeRange,
+          filters,
+          query,
+        });
+      });
+    }, 300);
 
-    return () => embeddableHandler.destroy();
+    return () => {
+      embeddableHandler.destroy();
+    };
   }, [embeddableHandler, eventEmitter]);
 
   useEffect(() => {
@@ -105,20 +113,18 @@ function DefaultEditor({
               <EuiResizablePanel
                 className="visEditor__visualization"
                 initialSize={100 - editorInitialWidth}
+                minSize="25%"
+                mode="main"
               >
                 <div className="visEditor__canvas" ref={visRef} data-shared-items-container />
               </EuiResizablePanel>
 
-              <EuiResizableButton
-                className={`visEditor__resizer ${isCollapsed ? 'visEditor__resizer-isHidden' : ''}`}
-              />
+              <EuiResizableButton className="visEditor__resizer" />
 
               <EuiResizablePanel
-                className={`visEditor__collapsibleSidebar ${
-                  isCollapsed ? 'visEditor__collapsibleSidebar-isClosed' : ''
-                }`}
                 initialSize={editorInitialWidth}
-                minSize={isCollapsed ? '0' : '350px'}
+                minSize="350px"
+                mode="collapsible"
               >
                 <DefaultEditorSideBar
                   embeddableHandler={embeddableHandler}

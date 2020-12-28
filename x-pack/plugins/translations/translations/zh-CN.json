@@ -3619,7 +3619,6 @@
     "visDefaultEditor.sidebar.autoApplyChangesOffLabel": "自动应用关闭",
     "visDefaultEditor.sidebar.autoApplyChangesOnLabel": "自动应用开启",
     "visDefaultEditor.sidebar.autoApplyChangesTooltip": "每次更改时自动更新可视化。",
-    "visDefaultEditor.sidebar.collapseButtonAriaLabel": "切换侧边栏",
     "visDefaultEditor.sidebar.discardChangesButtonLabel": "丢弃",
     "visDefaultEditor.sidebar.errorButtonTooltip": "需要解决突出显示的字段中的错误。",
     "visDefaultEditor.sidebar.indexPatternAriaLabel": "索引模式：{title}",

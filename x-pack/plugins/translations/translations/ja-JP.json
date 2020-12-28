@@ -3618,7 +3618,6 @@
     "visDefaultEditor.sidebar.autoApplyChangesOffLabel": "自動適用がオフです",
     "visDefaultEditor.sidebar.autoApplyChangesOnLabel": "自動適用がオンです",
     "visDefaultEditor.sidebar.autoApplyChangesTooltip": "変更されるごとにビジュアライゼーションを自動的に更新します。",
-    "visDefaultEditor.sidebar.collapseButtonAriaLabel": "サイドバーを切り替える",
     "visDefaultEditor.sidebar.discardChangesButtonLabel": "破棄",
     "visDefaultEditor.sidebar.errorButtonTooltip": "ハイライトされたフィールドのエラーを解決する必要があります。",
     "visDefaultEditor.sidebar.indexPatternAriaLabel": "インデックスパターン: {title}",

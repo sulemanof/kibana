@@ -3,7 +3,7 @@
 //
 
 .visEditorSidebar {
-  min-width: $vis-editor-sidebar-min-width;
+  height: 100%;
 
   // a hack for IE, issue: https://github.com/elastic/kibana/issues/66586
   > .visEditorSidebar__formWrapper {
@@ -39,7 +39,7 @@
 //
 
 .visEditorSidebar__titleContainer {
-  padding: $euiSizeS $euiSizeXL $euiSizeS $euiSizeS; // Extra padding on the right for the collapse button
+  padding: $euiSizeS;
 }
 
 .visEditorSidebar__indexPatternPlaceholder {

@@ -26,8 +26,7 @@ import React, {
   useEffect,
 } from 'react';
 import { isEqual } from 'lodash';
-import { i18n } from '@kbn/i18n';
-import { keys, EuiButtonIcon, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
+import { keys, EuiFlexGroup, EuiFlexItem } from '@elastic/eui';
 import { EventEmitter } from 'events';
 
 import {
@@ -47,8 +46,6 @@ import { useOptionTabs } from './use_option_tabs';
 
 interface DefaultEditorSideBarProps {
   embeddableHandler: VisualizeEmbeddableContract;
-  isCollapsed: boolean;
-  onClickCollapse: () => void;
   uiState: PersistedState;
   vis: Vis;
   isLinkedSearch: boolean;
@@ -59,8 +56,6 @@ interface DefaultEditorSideBarProps {
 
 function DefaultEditorSideBarComponent({
   embeddableHandler,
-  isCollapsed,
-  onClickCollapse,
   uiState,
   vis,
   isLinkedSearch,
@@ -183,74 +178,56 @@ function DefaultEditorSideBarComponent({
   };
 
   return (
-    <>
-      <EuiFlexGroup
-        className="visEditorSidebar"
-        direction="column"
-        justifyContent="spaceBetween"
-        gutterSize="none"
-        responsive={false}
-      >
-        <EuiFlexItem className="visEditorSidebar__formWrapper">
-          <form
-            className="visEditorSidebar__form"
-            name="visualizeEditor"
-            onKeyDownCapture={onSubmit}
-          >
-            {vis.type.requiresSearch && (
-              <SidebarTitle
-                isLinkedSearch={isLinkedSearch}
-                savedSearch={savedSearch}
-                vis={vis}
-                eventEmitter={eventEmitter}
+    <EuiFlexGroup
+      className="visEditorSidebar"
+      direction="column"
+      justifyContent="spaceBetween"
+      gutterSize="none"
+      responsive={false}
+    >
+      <EuiFlexItem className="visEditorSidebar__formWrapper">
+        <form className="visEditorSidebar__form" name="visualizeEditor" onKeyDownCapture={onSubmit}>
+          {vis.type.requiresSearch && (
+            <SidebarTitle
+              isLinkedSearch={isLinkedSearch}
+              savedSearch={savedSearch}
+              vis={vis}
+              eventEmitter={eventEmitter}
+            />
+          )}
+
+          {optionTabs.length > 1 && (
+            <DefaultEditorNavBar optionTabs={optionTabs} setSelectedTab={setSelectedTab} />
+          )}
+
+          {optionTabs.map(({ editor: Editor, name, isSelected = false }) => (
+            <div
+              key={name}
+              className={`visEditorSidebar__config ${
+                isSelected ? '' : 'visEditorSidebar__config-isHidden'
+              }`}
+            >
+              <Editor
+                isTabSelected={isSelected}
+                {...(name === 'data' ? dataTabProps : optionTabProps)}
+                timeRange={timeRange}
               />
-            )}
+            </div>
+          ))}
+        </form>
+      </EuiFlexItem>
 
-            {optionTabs.length > 1 && (
-              <DefaultEditorNavBar optionTabs={optionTabs} setSelectedTab={setSelectedTab} />
-            )}
-
-            {optionTabs.map(({ editor: Editor, name, isSelected = false }) => (
-              <div
-                key={name}
-                className={`visEditorSidebar__config ${
-                  isSelected ? '' : 'visEditorSidebar__config-isHidden'
-                }`}
-              >
-                <Editor
-                  isTabSelected={isSelected}
-                  {...(name === 'data' ? dataTabProps : optionTabProps)}
-                  timeRange={timeRange}
-                />
-              </div>
-            ))}
-          </form>
-        </EuiFlexItem>
-
-        <EuiFlexItem grow={false}>
-          <DefaultEditorControls
-            applyChanges={applyChanges}
-            dispatch={dispatch}
-            isDirty={isDirty}
-            isTouched={formState.touched}
-            isInvalid={formState.invalid}
-            vis={vis}
-          />
-        </EuiFlexItem>
-      </EuiFlexGroup>
-
-      <EuiButtonIcon
-        aria-expanded={!isCollapsed}
-        aria-label={i18n.translate('visDefaultEditor.sidebar.collapseButtonAriaLabel', {
-          defaultMessage: 'Toggle sidebar',
-        })}
-        className="visEditor__collapsibleSidebarButton"
-        data-test-subj="collapseSideBarButton"
-        color="text"
-        iconType={isCollapsed ? 'menuLeft' : 'menuRight'}
-        onClick={onClickCollapse}
-      />
-    </>
+      <EuiFlexItem grow={false}>
+        <DefaultEditorControls
+          applyChanges={applyChanges}
+          dispatch={dispatch}
+          isDirty={isDirty}
+          isTouched={formState.touched}
+          isInvalid={formState.invalid}
+          vis={vis}
+        />
+      </EuiFlexItem>
+    </EuiFlexGroup>
   );
 }
 
